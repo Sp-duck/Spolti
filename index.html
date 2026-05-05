@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stefano Spolti — Filmmaker & Fotografo</title>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #008080;
+      min-height: 100vh;
+      font-family: 'Share Tech Mono', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem 5rem;
+    }
+
+    .scanlines {
+      position: fixed; inset: 0; pointer-events: none; z-index: 999;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent, transparent 2px,
+        rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px
+      );
+    }
+
+    .window {
+      width: 100%;
+      max-width: 480px;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #808080;
+      border-bottom: 2px solid #808080;
+      box-shadow: 2px 2px 0 #000;
+    }
+
+    .titlebar {
+      background: linear-gradient(90deg, #000080, #1084d0);
+      color: #fff;
+      font-family: 'VT323', monospace;
+      font-size: 18px;
+      padding: 3px 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+    }
+
+    .titlebar-left { display: flex; align-items: center; gap: 6px; }
+
+    .titlebar-icon {
+      width: 16px; height: 16px;
+      background: #ffff00;
+      border: 1px solid #808000;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; color: #000;
+    }
+
+    .titlebar-btns { display: flex; gap: 2px; }
+
+    .tbtn {
+      width: 16px; height: 14px;
+      background: #c0c0c0;
+      border-top: 1px solid #fff;
+      border-left: 1px solid #fff;
+      border-right: 1px solid #808080;
+      border-bottom: 1px solid #808080;
+      font-size: 10px; line-height: 14px; text-align: center;
+      color: #000; cursor: pointer;
+      font-family: 'Share Tech Mono', monospace; font-weight: bold;
+    }
+    .tbtn:active {
+      border-top: 1px solid #808080; border-left: 1px solid #808080;
+      border-right: 1px solid #fff; border-bottom: 1px solid #fff;
+    }
+
+    .menubar {
+      background: #c0c0c0;
+      border-bottom: 1px solid #808080;
+      padding: 2px 4px;
+      display: flex;
+    }
+
+    .menu-item {
+      font-size: 12px; padding: 2px 8px;
+      cursor: pointer; color: #000;
+    }
+    .menu-item:hover { background: #000080; color: #fff; }
+
+    .window-body { padding: 12px; background: #c0c0c0; }
+
+    .profile-panel {
+      background: #fff;
+      border-top: 2px solid #808080;
+      border-left: 2px solid #808080;
+      border-right: 2px solid #fff;
+      border-bottom: 2px solid #fff;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      display: flex; align-items: center; gap: 14px;
+    }
+
+    .user-icon {
+      width: 52px; height: 52px;
+      background: #000080;
+      border-top: 2px solid #808080;
+      border-left: 2px solid #808080;
+      border-right: 2px solid #fff;
+      border-bottom: 2px solid #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'VT323', monospace; font-size: 22px; color: #fff;
+      flex-shrink: 0;
+    }
+
+    .user-name { font-family: 'VT323', monospace; font-size: 22px; color: #000; line-height: 1; }
+    .user-role { font-size: 11px; color: #444; margin-top: 2px; }
+    .user-status {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; color: #008000; margin-top: 4px;
+    }
+    .status-dot {
+      width: 8px; height: 8px; background: #008000;
+      border-top: 1px solid #004000; border-left: 1px solid #004000;
+      border-right: 1px solid #00ff00; border-bottom: 1px solid #00ff00;
+    }
+
+    .group-label { font-size: 11px; color: #000; margin-bottom: 4px; padding-left: 2px; }
+
+    .links-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+
+    .link-row {
+      display: flex; align-items: center;
+      background: #c0c0c0; cursor: pointer;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #808080;
+      border-bottom: 2px solid #808080;
+      text-decoration: none; color: #000;
+    }
+    .link-row:hover { background: #000080; color: #fff; }
+    .link-row:hover .link-file-icon { background: #ffff80; color: #000; }
+    .link-row:hover .link-desc { color: rgba(255,255,255,0.7); }
+    .link-row:hover .link-size { color: rgba(255,255,255,0.6); }
+    .link-row:active {
+      border-top: 2px solid #808080; border-left: 2px solid #808080;
+      border-right: 2px solid #fff; border-bottom: 2px solid #fff;
+    }
+
+    .link-file-icon {
+      width: 36px; height: 36px;
+      background: #fff;
+      border-right: 1px solid #808080;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+
+    .link-text { flex: 1; padding: 4px 10px; }
+    .link-name { font-size: 13px; font-weight: bold; }
+    .link-desc { font-size: 10px; color: #555; }
+    .link-size { font-size: 10px; color: #888; padding-right: 10px; flex-shrink: 0; }
+
+    .statusbar {
+      background: #c0c0c0;
+      border-top: 1px solid #808080;
+      padding: 3px 8px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 11px; color: #000;
+    }
+
+    .statusbar-panel {
+      border-top: 1px solid #808080; border-left: 1px solid #808080;
+      border-right: 1px solid #fff; border-bottom: 1px solid #fff;
+      padding: 1px 8px;
+    }
+
+    /* Taskbar fissa in basso */
+    .taskbar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: #c0c0c0;
+      border-top: 2px solid #fff;
+      padding: 3px 8px;
+      display: flex; align-items: center; gap: 8px;
+      z-index: 100;
+    }
+
+    .start-btn {
+      background: #c0c0c0;
+      border-top: 2px solid #fff; border-left: 2px solid #fff;
+      border-right: 2px solid #808080; border-bottom: 2px solid #808080;
+      font-family: 'VT323', monospace; font-size: 16px;
+      padding: 2px 10px; cursor: pointer; color: #000;
+      font-weight: bold;
+    }
+    .start-btn:active {
+      border-top: 2px solid #808080; border-left: 2px solid #808080;
+      border-right: 2px solid #fff; border-bottom: 2px solid #fff;
+    }
+
+    .taskbar-win {
+      border-top: 1px solid #808080; border-left: 1px solid #808080;
+      border-right: 1px solid #fff; border-bottom: 1px solid #fff;
+      font-size: 11px; padding: 2px 10px; color: #000;
+    }
+
+    .taskbar-clock {
+      margin-left: auto;
+      border-top: 1px solid #808080; border-left: 1px solid #808080;
+      border-right: 1px solid #fff; border-bottom: 1px solid #fff;
+      font-size: 11px; padding: 2px 8px;
+    }
+
+    @media (max-width: 500px) {
+      body { padding: 1rem 0.5rem 5rem; }
+      .window { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="scanlines"></div>
+
+  <div class="window">
+    <div class="titlebar">
+      <div class="titlebar-left">
+        <div class="titlebar-icon">S</div>
+        SPOLTI.EXE — Stefano Spolti
+      </div>
+      <div class="titlebar-btns">
+        <div class="tbtn">_</div>
+        <div class="tbtn">□</div>
+        <div class="tbtn">✕</div>
+      </div>
+    </div>
+
+    <div class="menubar">
+      <div class="menu-item">File</div>
+      <div class="menu-item">Modifica</div>
+      <div class="menu-item">Visualizza</div>
+      <div class="menu-item">?</div>
+    </div>
+
+    <div class="window-body">
+      <div class="profile-panel">
+        <div class="user-icon">SS</div>
+        <div class="user-info">
+          <div class="user-name">Stefano Spolti</div>
+          <div class="user-role">Filmmaker &amp; Fotografo · Milano</div>
+          <div class="user-status">
+            <div class="status-dot"></div>Disponibile per progetti
+          </div>
+        </div>
+      </div>
+
+      <div class="group-label">📁 Collegamento rapido — seleziona una destinazione:</div>
+
+      <div class="links-list">
+        <a class="link-row" href="https://stefanospolti.myportfolio.com/work" target="_blank" rel="noopener">
+          <div class="link-file-icon">🎬</div>
+          <div class="link-text">
+            <div class="link-name">PORTFOLIO.URL</div>
+            <div class="link-desc">stefanospolti.myportfolio.com</div>
+          </div>
+          <div class="link-size">4 KB</div>
+        </a>
+        <a class="link-row" href="https://www.instagram.com/gotalightstudio" target="_blank" rel="noopener">
+          <div class="link-file-icon">📷</div>
+          <div class="link-text">
+            <div class="link-name">INSTAGRAM.URL</div>
+            <div class="link-desc">@gotalightstudio — Casa di produzione</div>
+          </div>
+          <div class="link-size">2 KB</div>
+        </a>
+        <a class="link-row" href="mailto:stefano.spolti@icloud.com">
+          <div class="link-file-icon">✉</div>
+          <div class="link-text">
+            <div class="link-name">CONTATTI.URL</div>
+            <div class="link-desc">stefano.spolti@icloud.com</div>
+          </div>
+          <div class="link-size">1 KB</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="statusbar">
+      <div class="statusbar-panel">3 oggetti</div>
+      <div class="statusbar-panel">Filmmaker Edition v1.0</div>
+    </div>
+  </div>
+
+  <div class="taskbar">
+    <button class="start-btn">⊞ Start</button>
+    <div class="taskbar-win">📄 SPOLTI.EXE</div>
+    <div class="taskbar-clock" id="clock">00:00</div>
+  </div>
+
+  <script>
+    function updateClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      document.getElementById('clock').textContent = h + ':' + m;
+    }
+    updateClock();
+    setInterval(updateClock, 10000);
+  </script>
+
+</body>
+</html>
